@@ -21,6 +21,7 @@ if [ -f /etc/shadowsocks-r/config.json ]; then
 elif [ -f /etc/shadowsocks.json ]; then
     CONF=/etc/shadowsocks.json
 fi
+ssr_json=$(echo '{"hostname": "'$(hostname)'", "ssr": '$(<${CONF})'}')
 RETVAL=0
 
 check_running(){
@@ -45,14 +46,13 @@ do_start(){
         else
             echo "Starting $NAME failed"
         fi
-        ssr_json=$(echo '{"hostname": "'$(hostname)'", "ssr": '$(<${CONF})'}')
-        curl -g 'https://vbdssr.pythonanywhere.com/subscribe/upload/' -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -d ''"${ssr_json}"''
-        RETVAL=$?
-        if [ $RETVAL -eq 0 ]; then
-            echo "Update RSS success"
-        else
-            echo "Update RSS failed"
-        fi
+    fi
+    curl -g 'https://vbdssr.pythonanywhere.com/subscribe/upload/' -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -d ''"${ssr_json}"''
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        echo "Update RSS success"
+    else
+        echo "Update RSS failed"
     fi
 }
 
@@ -69,6 +69,13 @@ do_stop(){
     else
         echo "$NAME is stopped"
         RETVAL=1
+    fi
+    curl -g 'https://vbdssr.pythonanywhere.com/subscribe/remove/' -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -d ''"${ssr_json}"''
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]; then
+        echo "Remove RSS success"
+    else
+        echo "Remove RSS failed"
     fi
 }
 
