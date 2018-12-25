@@ -15,7 +15,6 @@
 # Author: Teddysun <i@teddysun.com>
 
 NAME=ShadowsocksR
-hostname=$(curl -s http://whatismyip.akamai.com/)
 DAEMON=/usr/local/shadowsocks/server.py
 if [ -f /etc/shadowsocks-r/config.json ]; then
     CONF=/etc/shadowsocks-r/config.json
